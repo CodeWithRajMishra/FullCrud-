@@ -1,16 +1,24 @@
 const express= require("express");
-const mongoose= require("mongoose");
-const app= express();
+const app=express();
+require("dotenv").config();
 const cors= require("cors");
 const bodyParser = require('body-parser');
-const empRoute= require("./routes/employeeRoute");
 
-mongoose.connect("mongodb://127.0.0.1:27017/sumitdb").then(()=>{
-    console.log("DB connected!!!")
-})
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const mongoose= require("mongoose");
+const empRoute= require("./routes/empRoute");
+
 app.use(cors());
+
+// Parse incoming requests with JSON payloads
+app.use(bodyParser.json());
+// Parse incoming requests with urlencoded payloads
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+mongoose.connect(process.env.DB_CONNECTION).then(()=>{
+   console.log("DB succesfully connected!!!");
+});
+const Port=process.env.PORT || 8080;
 
 
 app.use("/employee", empRoute);
@@ -18,6 +26,9 @@ app.use("/employee", empRoute);
 
 
 
-app.listen(8000, ()=>{
-    console.log("server run on 8000!");
+
+
+
+app.listen(Port, ()=>{
+    console.log(`server run on  port ${Port}`);
 })
